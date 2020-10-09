@@ -3,26 +3,38 @@
 
 % Parameters:
 % folder -> Folder where the images to analize are located. All images must
-% be the same size
-% k -> Number of images before OR operation is performed
+% be JPEGs and also the same size
+% outputFolder -> Folder where the analyzed images will be located
+% k -> Number of images to analize before the OR operation is performed
 % theta -> Umbralization percentage (in decimals)
+% video -> If this value is true the analyzed images will also be saved as a video
 
-function MovementDetection(folder, k, theta)
+function MovementDetection(folder, k, theta, outputFolder, video)
     if ~endsWith(folder, '\')
         imagePath = strcat(folder,'\*.jpg');
         folder = strcat(folder,'\');
     else
         imagePath = strcat(folder,'*.jpg');
     end
-
-    %figure;
-    %hold on;
+    
+    if ~endsWith(outputFolder, '\')
+        outputFolder = strcat(outputFolder,'\');
+    end
+    
+    if video
+        fprintf('Output will also be saved as %svideo.avi', outputFolder);
+        outputVideo = MovementVideo(strcat(outputFolder, 'video.avi'));
+    end
     
     fprintf('Using %s as the source folder\n', folder);
+    fprintf('Using %s as the output folder\n', outputFolder);
+    
     imageCollection = dir(imagePath);
+    queue = ImageQueue(k);
 
     for n=1 : length(imageCollection)
         if(imageCollection(n).isdir == 0)
+            
             fprintf('Image # %s\n', int2str(n));
             
             currentImage = imread(sprintf('%s%s', folder, imageCollection(n).name));
@@ -32,7 +44,6 @@ function MovementDetection(folder, k, theta)
             % a placeholder
             if(n == 1)
                 previousImage = zeros(imageSize);
-                queue = ImageQueue([imageSize(1) imageSize(2)], 4);
             else
                 previousImage = imread(sprintf('%s%s', folder, imageCollection(n-1).name));
             end
@@ -40,12 +51,27 @@ function MovementDetection(folder, k, theta)
             [subtractedImage, maximumDifference] = RestaImagenes(currentImage, previousImage);
             umbralizedImage = umbralizarByN(subtractedImage, maximumDifference * theta, 1);
             
+            queue.add(umbralizedImage);
+            
             if(queue.full)
-                disp('full m8');
+                resultImage = MultipleOR(queue);
+                highlight = HighlightImage(resultImage, currentImage);
+                imwrite(highlight, strcat(outputFolder, sprintf('movement%s.jpg', int2str(n))));
+                fprintf('Wrote movement%s.jpg\n', int2str(n));
+                
+                if video
+                    outputVideo.addFrame(highlight);
+                    fprintf('Wrote frame #%s\n', int2str(n));
+                end
             else
-                queue.add(umbralizedImage);
-                disp('Aint full yet m8');
+               if video
+                    outputVideo.addFrame(currentImage);
+                    fprintf('Wrote frame #%s\n', int2str(n));
+                end 
             end
         end
+    end
+    if video
+        outputVideo.endVideo();
     end
 end
