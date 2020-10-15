@@ -22,7 +22,7 @@ function MovementDetection(folder, k, theta, outputFolder, video)
     end
     
     if video
-        fprintf('Output will also be saved as %svideo.avi', outputFolder);
+        fprintf('Output will also be saved as %svideo.avi\n', outputFolder);
         outputVideo = MovementVideo(strcat(outputFolder, 'video.avi'));
     end
     

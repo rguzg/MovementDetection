@@ -13,7 +13,7 @@ function resultImage = MultipleOR(fullQueue)
 % using this variable    
 resultImage = fullQueue.get();
 
- for i = (fullQueue.index) : 4
+ for i = (fullQueue.index) : fullQueue.size
      % max() is equivalent to doing a bitwise or over the two images
      resultImage = max(resultImage, fullQueue.get());
  end

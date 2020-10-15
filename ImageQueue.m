@@ -14,7 +14,7 @@ classdef ImageQueue < handle
     methods
         function object = ImageQueue(elements)
             object.size = elements;
-            object.index = elements;
+            object.index = 1;
             object.full = false;
             object.empty = true;
             object.array;
@@ -26,10 +26,10 @@ classdef ImageQueue < handle
                 object.empty = false;
                 object.array(:,:,object.index) = image;
                 
-                if object.index == 1
+                if object.index == object.size
                     object.full = true;
                 else
-                    object.index = object.index - 1;
+                    object.index = object.index + 1;
                 end
             end
         end
@@ -38,13 +38,15 @@ classdef ImageQueue < handle
                 throw(MException('ImageQueue:Error', 'The queue is empty'));
             else
                 object.full = false;
-                image = object.array(:,:,object.index);
-                object.array(:,:,object.index) = 0;
+                currentIndex = (object.size - object.index) + 1;
                 
-                if(object.index == object.size)
+                image = object.array(:,:,currentIndex);
+                object.array(:,:,currentIndex) = 0;
+                
+                if(object.index == 1)
                     object.empty = true;
                 else
-                    object.index = object.index + 1;
+                    object.index = object.index - 1;
                 end
             end
         end
