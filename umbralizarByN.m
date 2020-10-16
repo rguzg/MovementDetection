@@ -5,7 +5,6 @@
 %% condicion - 1-mayor o igual, 2-menor o igual
 %% Salidas:
 %% G - Imagen resultado
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ G ] = umbralizarByN( I, sigma, condicion )   
      bandIntervalo=false; 
      sigma1=sigma(1);

@@ -1,11 +1,11 @@
 % Movement Detection
-% Detect movement on a set of images using image substraction
+% Detect movement on a set of images using image subtraction
 
 % Parameters:
-% folder -> Folder where the images to analize are located. All images must
+% folder -> Folder where the images to analyze are located. All images must
 % be JPEGs and also the same size
-% outputFolder -> Folder where the analyzed images will be located
-% k -> Number of images to analize before the OR operation is performed
+% outputFolder -> Folder where the analyzed images will be saved
+% k -> Number of images to analyze before the OR operation is performed
 % theta -> Umbralization percentage (in decimals)
 % video -> If this value is true the analyzed images will also be saved as a video
 
